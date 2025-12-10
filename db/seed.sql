@@ -1,8 +1,6 @@
 -- Restaurant Dish Search Sample Data
 -- Run this after schema.sql to populate the database
 
-USE restaurant_db;
-
 -- Insert Restaurants
 INSERT INTO restaurants (id, name, city, address) VALUES
 (1, 'Hyderabadi Spice House', 'Hyderabad', '123 Jubilee Hills, Hyderabad'),

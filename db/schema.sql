@@ -1,10 +1,6 @@
 -- Restaurant Dish Search Database Schema
 -- Run this file to create the database structure
 
--- Create database if not exists
-CREATE DATABASE IF NOT EXISTS restaurant_db;
-USE restaurant_db;
-
 -- Drop tables if they exist (for clean setup)
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS menu_items;
