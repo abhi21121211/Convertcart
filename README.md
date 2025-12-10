@@ -2,7 +2,16 @@
 
 A simple backend service that allows users to search for restaurants based on a dish name with price range filtering. Returns the top 10 restaurants where the searched dish has been ordered the most.
 
-## 🚀 Features
+## � Live Demo
+
+**Base URL**: https://convertcart-v60r.onrender.com
+
+**Try it now**:
+```
+https://convertcart-v60r.onrender.com/search/dishes?name=biryani&minPrice=150&maxPrice=300
+```
+
+## �🚀 Features
 
 - Search restaurants by dish name
 - Filter results by price range (mandatory)
@@ -14,81 +23,9 @@ A simple backend service that allows users to search for restaurants based on a 
 
 - **Runtime**: Node.js
 - **Framework**: Express.js
-- **Database**: MySQL
+- **Database**: MySQL (Aiven Cloud)
 - **Driver**: mysql2
-
-## 🛠️ Setup Instructions
-
-### Prerequisites
-
-- Node.js (v18 or higher)
-- MySQL (v8 or higher)
-
-### 1. Clone the Repository
-
-```bash
-git clone <repository-url>
-cd Convertcart
-```
-
-### 2. Install Dependencies
-
-```bash
-npm install
-```
-
-### 3. Configure Environment
-
-Create a `.env` file from the example:
-
-```bash
-cp .env.example .env
-```
-
-Update the `.env` file with your MySQL credentials:
-
-```env
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=your_password
-DB_NAME=restaurant_db
-DB_PORT=3306
-PORT=3000
-```
-
-### 4. Setup Database
-
-Run the schema and seed files:
-
-```bash
-# Login to MySQL
-mysql -u root -p
-
-# Run schema (creates database and tables)
-source db/schema.sql
-
-# Run seed data
-source db/seed.sql
-```
-
-Or run directly:
-
-```bash
-mysql -u root -p < db/schema.sql
-mysql -u root -p < db/seed.sql
-```
-
-### 5. Start the Server
-
-```bash
-# Development (with auto-reload)
-npm run dev
-
-# Production
-npm start
-```
-
-The server will start on `http://localhost:3000`
+- **Hosting**: Render
 
 ## 📡 API Documentation
 
@@ -109,7 +46,7 @@ Search for restaurants by dish name with price range filter.
 **Example Request**:
 
 ```bash
-curl "http://localhost:3000/search/dishes?name=biryani&minPrice=150&maxPrice=300"
+curl "https://convertcart-v60r.onrender.com/search/dishes?name=biryani&minPrice=150&maxPrice=300"
 ```
 
 **Success Response** (200 OK):
@@ -151,7 +88,74 @@ curl "http://localhost:3000/search/dishes?name=biryani&minPrice=150&maxPrice=300
 
 Returns API information and available endpoints.
 
-## 📁 Project Structure
+## �️ Local Setup
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- MySQL (v8 or higher)
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/abhi21121211/Convertcart.git
+cd Convertcart
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Configure Environment
+
+Create a `.env` file from the example:
+
+```bash
+cp .env.example .env
+```
+
+Update the `.env` file with your MySQL credentials:
+
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=restaurant_db
+DB_PORT=3306
+DB_SSL=false
+PORT=3000
+```
+
+### 4. Setup Database
+
+Run the schema and seed files:
+
+```bash
+# Login to MySQL
+mysql -u root -p
+
+# Run schema (creates tables)
+source db/schema.sql
+
+# Run seed data
+source db/seed.sql
+```
+
+### 5. Start the Server
+
+```bash
+# Development (with auto-reload)
+npm run dev
+
+# Production
+npm start
+```
+
+The server will start on `http://localhost:3000`
+
+## �📁 Project Structure
 
 ```
 ├── src/
@@ -166,12 +170,25 @@ Returns API information and available endpoints.
 │   ├── schema.sql             # Database schema
 │   └── seed.sql               # Sample data
 ├── server.js                  # Entry point
+├── setup-db.js                # Database setup script
 ├── package.json
 ├── .env.example
 └── README.md
 ```
 
 ## 🗃️ Database Schema
+
+```
+┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
+│   restaurants   │       │   menu_items    │       │     orders      │
+├─────────────────┤       ├─────────────────┤       ├─────────────────┤
+│ id (PK)         │───┐   │ id (PK)         │───┐   │ id (PK)         │
+│ name            │   │   │ restaurant_id(FK)│◄──┘   │ menu_item_id(FK)│◄──┘
+│ city            │   │   │ dish_name       │       │ quantity        │
+│ address         │   │   │ price           │       │ created_at      │
+│ created_at      │   └──►│ created_at      │       └─────────────────┘
+└─────────────────┘       └─────────────────┘
+```
 
 ### Tables
 
@@ -187,7 +204,7 @@ Returns API information and available endpoints.
 - `dish_name` - Name of the dish
 - `price` - Price of the dish
 
-**orders**
+**orders** (simplified: one order = one item)
 - `id` - Primary key
 - `menu_item_id` - Foreign key to menu_items
 - `quantity` - Order quantity (default: 1)
@@ -196,32 +213,30 @@ Returns API information and available endpoints.
 
 ```bash
 # Search for biryani in price range 150-300
-curl "http://localhost:3000/search/dishes?name=biryani&minPrice=150&maxPrice=300"
+curl "https://convertcart-v60r.onrender.com/search/dishes?name=biryani&minPrice=150&maxPrice=300"
 
 # Search for pizza
-curl "http://localhost:3000/search/dishes?name=pizza&minPrice=100&maxPrice=400"
+curl "https://convertcart-v60r.onrender.com/search/dishes?name=pizza&minPrice=100&maxPrice=400"
 
-# Test error handling
-curl "http://localhost:3000/search/dishes?name=biryani"
+# Test error handling (missing params)
+curl "https://convertcart-v60r.onrender.com/search/dishes?name=biryani"
 ```
 
 ## 🌐 Deployment
 
-### Railway
+The API is deployed on **Render** with **Aiven MySQL**.
 
-1. Push code to GitHub
-2. Connect Railway to your repository
-3. Add MySQL database addon
-4. Set environment variables
-5. Deploy
+### Environment Variables Required
 
-### Render
-
-1. Push code to GitHub
-2. Create new Web Service on Render
-3. Set up MySQL (PlanetScale, Aiven, or external)
-4. Configure environment variables
-5. Deploy
+| Variable | Description |
+|----------|-------------|
+| `DB_HOST` | MySQL host |
+| `DB_USER` | MySQL username |
+| `DB_PASSWORD` | MySQL password |
+| `DB_NAME` | Database name |
+| `DB_PORT` | MySQL port |
+| `DB_SSL` | Enable SSL (true/false) |
+| `PORT` | Server port |
 
 ## 📄 License
 
